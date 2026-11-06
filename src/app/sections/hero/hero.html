@@ -1,0 +1,33 @@
+<section class="hero" id="top">
+  <div class="hero__glow" aria-hidden="true"></div>
+  <div class="hero__grid" aria-hidden="true"></div>
+
+  <div class="container hero__content">
+    @if (profile.available) {
+      <p class="badge"><span class="dot"></span> Disponible pour de nouveaux projets</p>
+    }
+
+    <h1 class="hero__title">
+      {{ profile.firstName }}
+      <span class="gradient-text">{{ profile.lastName }}</span>
+    </h1>
+
+    <p class="hero__role">{{ profile.role }}</p>
+    <p class="hero__tagline">{{ profile.tagline }}</p>
+
+    <div class="hero__actions">
+      <a class="btn" href="#projects">Voir mes projets</a>
+      <a class="btn btn--ghost" href="#contact">Me contacter</a>
+    </div>
+
+    <ul class="hero__socials">
+      @for (social of socials; track social.label) {
+        <li>
+          <a [href]="social.url" target="_blank" rel="noopener">{{ social.label }} ↗</a>
+        </li>
+      }
+    </ul>
+  </div>
+
+  <a class="hero__scroll" href="#about" aria-label="Défiler vers le bas"><span></span></a>
+</section>

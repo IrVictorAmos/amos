@@ -1,0 +1,24 @@
+<header class="header" [class.scrolled]="scrolled()">
+  <div class="container header__inner">
+    <a class="logo" href="#top" (click)="closeMenu()">
+      {{ profile.lastName.toLowerCase() }}<span>.</span>
+    </a>
+
+    <button
+      class="burger"
+      type="button"
+      aria-label="Ouvrir le menu"
+      [attr.aria-expanded]="menuOpen()"
+      (click)="toggleMenu()"
+    >
+      <span></span><span></span>
+    </button>
+
+    <nav class="nav" [class.open]="menuOpen()">
+      @for (link of links; track link.anchor) {
+        <a [href]="'#' + link.anchor" (click)="closeMenu()">{{ link.label }}</a>
+      }
+      <a class="btn btn--small" href="#contact" (click)="closeMenu()">Me contacter</a>
+    </nav>
+  </div>
+</header>
