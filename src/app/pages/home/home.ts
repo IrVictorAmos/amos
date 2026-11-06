@@ -1,18 +1,20 @@
 import { Component } from '@angular/core';
-import { Hero } from '../../sections/hero/hero';
-import { About } from '../../sections/about/about';
-import { Skills } from '../../sections/skills/skills';
-import { Projects } from '../../sections/projects/projects';
-import { Contact } from '../../sections/contact/contact';
+import { Hero } from '../../sections/hero';
+import { Manifesto } from '../../sections/manifesto';
+import { Work } from '../../sections/work';
+import { Expertise } from '../../sections/expertise';
+import { Method } from '../../sections/method';
+import { Contact } from '../../sections/contact';
 
 @Component({
   selector: 'app-home',
-  imports: [Hero, About, Skills, Projects, Contact],
+  imports: [Hero, Manifesto, Work, Expertise, Method, Contact],
   template: `
     <app-hero />
-    <app-about />
-    <app-skills />
-    <app-projects />
+    <app-manifesto />
+    <app-work />
+    <app-expertise />
+    <app-method />
     <app-contact />
   `,
 })

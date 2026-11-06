@@ -1,0 +1,49 @@
+<section class="hero" id="top" aria-labelledby="hero-title">
+  <div class="wrap hero__grid">
+    <div class="hero__meta">
+      <span class="status" data-tone="ok">{{ profile.available }}</span>
+      <span class="hero__clock">{{ profile.city }}, {{ time() }}</span>
+    </div>
+
+    <h1 class="hero__name" id="hero-title">
+      <span class="line"><span>{{ profile.firstName }}</span></span>
+      <span class="line line--2"><span>{{ profile.lastName }}</span></span>
+    </h1>
+
+    <div class="hero__copy">
+      <p class="hero__intro">{{ profile.intro }}</p>
+      <div class="hero__actions">
+        <a class="btn" routerLink="/" fragment="realisations">Voir les réalisations</a>
+        <a class="btn btn--ghost" routerLink="/" fragment="contact">Discuter d'un projet</a>
+      </div>
+    </div>
+
+    <figure class="hero__photo">
+      <div class="hero__frame">
+        <img
+          src="images/victor-amos-800.webp"
+          srcset="images/victor-amos-480.webp 480w, images/victor-amos-800.webp 800w, images/victor-amos-1200.webp 1200w"
+          sizes="(min-width: 1024px) 34vw, 90vw"
+          width="800"
+          height="1066"
+          alt="Victor Amos, en costume, assis devant son ordinateur portable"
+          fetchpriority="high"
+        />
+      </div>
+      <span class="crop crop--tl" aria-hidden="true"></span>
+      <span class="crop crop--tr" aria-hidden="true"></span>
+      <span class="crop crop--bl" aria-hidden="true"></span>
+      <span class="crop crop--br" aria-hidden="true"></span>
+      <figcaption class="dim hero__dim"><span>Ingénieur logiciel</span></figcaption>
+    </figure>
+
+    <dl class="hero__facts">
+      @for (fact of profile.facts; track fact.label; let i = $index) {
+        <div class="fact" [style.--i]="i">
+          <dt>{{ fact.label }}</dt>
+          <dd>{{ fact.value }}</dd>
+        </div>
+      }
+    </dl>
+  </div>
+</section>

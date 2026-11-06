@@ -1,0 +1,336 @@
+/* Mobile d'abord */
+.hero {
+  position: relative;
+  padding-block: 104px var(--s-8);
+  overflow: clip;
+
+  /* trame de plan, très discrète, qui s'efface vers le bas */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to bottom, black, transparent 70%);
+    opacity: 0.45;
+    pointer-events: none;
+  }
+}
+
+.hero__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-6);
+}
+
+.hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-5);
+  font-size: var(--step--1);
+  animation: fade-up var(--d-slow) var(--ease-out) 900ms both;
+}
+
+.hero__clock {
+  color: var(--bone-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Le nom : point focal. Chaque ligne glisse hors d'un masque et s'élargit. */
+.hero__name {
+  font-size: var(--step-hero);
+  font-weight: 720;
+  font-stretch: 82%;
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  margin-block: var(--s-2);
+
+  .line {
+    display: block;
+    overflow: clip;
+    padding-bottom: 0.06em;
+  }
+
+  .line > span {
+    display: inline-block;
+    animation: name-in 1200ms var(--ease-out) 120ms both;
+  }
+
+  .line--2 > span {
+    animation-delay: 240ms;
+  }
+
+  .line--2 {
+    padding-left: 0.42em;
+  }
+}
+
+.hero__intro {
+  font-size: var(--step-1);
+  line-height: 1.5;
+  color: var(--bone-2);
+  max-width: 46ch;
+  animation: fade-up var(--d-slow) var(--ease-out) 700ms both;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-6);
+  animation: fade-up var(--d-slow) var(--ease-out) 820ms both;
+
+  .btn {
+    flex: 1 1 220px;
+  }
+}
+
+/* Photo : rideau qui se lève + repères de coupe comme sur un tirage */
+.hero__photo {
+  position: relative;
+  margin: var(--s-4) var(--s-3) 0;
+}
+
+.hero__frame {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--r-1);
+  overflow: hidden;
+  background: var(--ink-2);
+  clip-path: inset(0 0 0 0);
+  animation: curtain 1400ms var(--ease-in-out) 260ms both;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+    animation: settle 1900ms var(--ease-out) 260ms both;
+  }
+
+  /* fondu ocre en bas pour lier la photo à la page */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 30%;
+    background: linear-gradient(to top, color-mix(in oklch, var(--ink-0) 55%, transparent), transparent);
+  }
+}
+
+.crop {
+  --len: 18px;
+  --gap: -10px;
+  position: absolute;
+  width: var(--len);
+  height: var(--len);
+  border-color: var(--ochre);
+  border-style: solid;
+  border-width: 0;
+  animation: crop-in 700ms var(--ease-out) 1300ms both;
+
+  &--tl {
+    top: var(--gap);
+    left: var(--gap);
+    border-top-width: 1.5px;
+    border-left-width: 1.5px;
+  }
+  &--tr {
+    top: var(--gap);
+    right: var(--gap);
+    border-top-width: 1.5px;
+    border-right-width: 1.5px;
+  }
+  &--bl {
+    bottom: calc(var(--gap) + 40px);
+    left: var(--gap);
+    border-bottom-width: 1.5px;
+    border-left-width: 1.5px;
+  }
+  &--br {
+    bottom: calc(var(--gap) + 40px);
+    right: var(--gap);
+    border-bottom-width: 1.5px;
+    border-right-width: 1.5px;
+  }
+}
+
+.hero__dim {
+  height: 40px;
+  animation: fade-up var(--d-slow) var(--ease-out) 1400ms both;
+
+  &::before,
+  &::after {
+    transform-origin: center;
+    animation: draw 900ms var(--ease-out) 1400ms both;
+  }
+}
+
+/* Faits clés : une règle qui se dessine, puis les valeurs */
+.hero__facts {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-top: var(--s-5);
+  border-top: 1px solid var(--line-2);
+}
+
+.fact {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: var(--s-4);
+  padding-block: var(--s-4);
+  border-bottom: 1px solid var(--line);
+  animation: fade-up var(--d-slow) var(--ease-out) both;
+  animation-delay: calc(1000ms + var(--i) * 90ms);
+
+  dt {
+    color: var(--bone-3);
+    font-size: var(--step--1);
+    padding-top: 2px;
+  }
+
+  dd {
+    font-weight: 500;
+    line-height: 1.4;
+  }
+}
+
+/* Tablette */
+@media (min-width: 640px) {
+  .hero__photo {
+    width: min(78%, 460px);
+    justify-self: end;
+  }
+
+  .hero__facts {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--s-6);
+  }
+
+  .fact {
+    grid-template-columns: 1fr;
+    gap: var(--s-1);
+  }
+}
+
+/* Bureau : nom à gauche, photo à droite, le regard tourné vers le texte */
+@media (min-width: 1024px) {
+  .hero {
+    padding-block: 128px var(--s-8);
+  }
+
+  .hero__grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--s-5);
+    row-gap: 0;
+  }
+
+  .hero__meta {
+    grid-column: 1 / span 7;
+    grid-row: 1;
+    justify-content: flex-start;
+    align-self: start;
+    gap: var(--s-6);
+  }
+
+  .hero__name {
+    grid-column: 1 / span 8;
+    grid-row: 2;
+    margin-block: var(--s-6) var(--s-7);
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero__copy {
+    grid-column: 1 / span 6;
+    grid-row: 3;
+  }
+
+  .hero__actions .btn {
+    flex: 0 0 auto;
+  }
+
+  .hero__photo {
+    grid-column: 9 / -1;
+    grid-row: 1 / span 3;
+    width: 100%;
+    margin: 0;
+    align-self: start;
+  }
+
+  .hero__facts {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: var(--s-9);
+    column-gap: 0;
+    border-top: 0;
+  }
+
+  .fact {
+    position: relative;
+    padding: var(--s-5) var(--s-5) 0 0;
+    border-bottom: 0;
+
+    /* règle supérieure dessinée de gauche à droite */
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 var(--s-5) auto 0;
+      height: 1px;
+      background: var(--line-2);
+      transform-origin: left;
+      animation: draw 900ms var(--ease-out) both;
+      animation-delay: calc(950ms + var(--i) * 90ms);
+    }
+  }
+}
+
+@media (min-width: 1440px) {
+  .hero__name .line--2 {
+    padding-left: 0.62em;
+  }
+}
+
+@keyframes name-in {
+  from {
+    transform: translateY(105%);
+    font-stretch: 75%;
+  }
+}
+
+@keyframes curtain {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+}
+
+@keyframes settle {
+  from {
+    transform: scale(1.22);
+  }
+}
+
+@keyframes crop-in {
+  from {
+    opacity: 0;
+    scale: 1.8;
+  }
+}
+
+@keyframes draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}

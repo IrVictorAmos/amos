@@ -1,0 +1,390 @@
+:host {
+  display: block;
+  container-type: inline-size;
+}
+
+.ui {
+  --appear: 0;
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 4 / 3;
+  padding: clamp(16px, 7cqi, 48px);
+  border-radius: var(--r-3);
+  background:
+    radial-gradient(120% 90% at 85% 0%, color-mix(in oklch, var(--ochre) 13%, transparent), transparent 60%),
+    linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 24px 24px,
+    var(--ink-1);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  font-size: clamp(10px, 3.1cqi, 14px);
+  line-height: 1.35;
+}
+
+/* Animation déclenchée par .is-visible sur un parent, ou en continu en mode live */
+:host-context(.is-visible) .ui,
+.ui.live {
+  --appear: 1;
+}
+
+.win {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  border-radius: var(--r-2);
+  background: var(--ink-0);
+  border: 1px solid var(--line-2);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+  transform: translateY(calc((1 - var(--appear)) * 24px));
+  transition: transform 900ms var(--ease-out);
+}
+
+.win__bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.7em 0.9em;
+  border-bottom: 1px solid var(--line);
+  color: var(--bone-3);
+
+  i {
+    width: 0.6em;
+    height: 0.6em;
+    border-radius: 50%;
+    background: var(--ink-3);
+  }
+
+  span {
+    margin-left: 0.6em;
+  }
+}
+
+.chip {
+  padding: 0.2em 0.7em;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9em;
+
+  &--ok {
+    background: color-mix(in oklch, var(--ok) 18%, transparent);
+    color: var(--ok);
+  }
+}
+
+/* ----- SchoolReflexe : bulletin ----- */
+.report {
+  display: grid;
+  gap: 0.75em;
+  padding: 1em;
+}
+
+.report__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  b,
+  small {
+    display: block;
+  }
+
+  b {
+    font-size: 1.15em;
+    color: var(--bone);
+  }
+
+  small {
+    color: var(--bone-3);
+  }
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: 7.5em 1fr 2em;
+  align-items: center;
+  gap: 0.8em;
+  color: var(--bone-2);
+
+  b {
+    text-align: right;
+    color: var(--bone);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.bar {
+  height: 0.5em;
+  border-radius: 999px;
+  background: var(--ink-2);
+  overflow: hidden;
+
+  span {
+    display: block;
+    height: 100%;
+    width: calc(var(--v) * 1%);
+    background: var(--ochre);
+    border-radius: inherit;
+    transform-origin: left;
+    transform: scaleX(var(--appear));
+    transition: transform 1100ms var(--ease-out);
+    transition-delay: calc(250ms + var(--i) * 120ms);
+  }
+}
+
+.report__total {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.7em;
+  border-top: 1px dashed var(--line-2);
+  color: var(--bone-2);
+
+  b {
+    font-family: var(--font-display);
+    font-size: 1.5em;
+    color: var(--ochre-strong);
+    line-height: 1;
+  }
+}
+
+.badge-offline {
+  position: absolute;
+  right: 0.8em;
+  top: 0.55em;
+  padding: 0.15em 0.6em;
+  border-radius: 999px;
+  font-size: 0.85em;
+  color: var(--ok);
+  border: 1px solid color-mix(in oklch, var(--ok) 40%, transparent);
+}
+
+/* ----- BeelShop : boutique ----- */
+.cart {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 1.7em;
+  height: 1.7em;
+  border-radius: 50%;
+  background: var(--ochre);
+  color: var(--ochre-ink);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.flash {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6em 1em;
+  background: color-mix(in oklch, var(--danger) 16%, transparent);
+  color: var(--danger);
+  font-weight: 600;
+
+  b {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.shop {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75em;
+  padding: 1em;
+}
+
+.product {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.4em;
+  opacity: var(--appear);
+  transform: translateY(calc((1 - var(--appear)) * 14px));
+  transition:
+    opacity 700ms var(--ease-out),
+    transform 700ms var(--ease-out);
+  transition-delay: calc(200ms + var(--i) * 90ms);
+  color: var(--bone-2);
+
+  b {
+    color: var(--bone);
+  }
+}
+
+.product__img {
+  grid-column: 1 / -1;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-1);
+  background:
+    radial-gradient(circle at 50% 60%, oklch(0.7 0.09 var(--hue)) 0 28%, transparent 29%),
+    oklch(0.3 0.04 var(--hue));
+}
+
+/* ----- Events : billet ----- */
+.ticket {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  width: 100%;
+  max-width: 420px;
+  border-radius: var(--r-2);
+  background: var(--bone);
+  color: var(--ink-0);
+  box-shadow: var(--shadow-1);
+  transform: rotate(calc(-4deg + var(--appear) * 2deg)) translateY(calc((1 - var(--appear)) * 24px));
+  transition: transform 1000ms var(--ease-out);
+}
+
+.ticket__main {
+  display: grid;
+  gap: 0.35em;
+  padding: 1.3em;
+
+  small {
+    color: oklch(0.45 0.03 258);
+  }
+
+  b {
+    font-family: var(--font-display);
+    font-size: 1.9em;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+}
+
+.ticket__meta {
+  display: flex;
+  gap: 1em;
+  color: oklch(0.4 0.03 258);
+}
+
+.ticket__ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.6em;
+  font-weight: 600;
+  color: oklch(0.5 0.12 168);
+
+  i {
+    width: 0.7em;
+    height: 0.7em;
+    border-radius: 50%;
+    background: currentColor;
+  }
+}
+
+.ticket__stub {
+  display: grid;
+  place-items: center;
+  padding: 1em;
+  border-left: 2px dashed oklch(0.8 0.01 85);
+}
+
+.qr {
+  display: grid;
+  grid-template-columns: repeat(7, 0.75em);
+  gap: 2px;
+
+  i {
+    width: 0.75em;
+    height: 0.75em;
+    background: oklch(0.88 0.01 85);
+
+    &.on {
+      background: var(--ink-0);
+    }
+  }
+}
+
+/* ----- Gestion hospitalière : dossier patient ----- */
+.patient {
+  display: grid;
+  gap: 0.6em;
+  padding: 1em;
+}
+
+.patient__id {
+  display: flex;
+  align-items: center;
+  gap: 0.8em;
+
+  b,
+  small {
+    display: block;
+  }
+
+  small {
+    color: var(--bone-3);
+  }
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 2.4em;
+  height: 2.4em;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--info) 22%, transparent);
+  color: var(--info);
+  font-weight: 700;
+}
+
+.vitals {
+  width: 100%;
+  height: 3.2em;
+
+  polyline {
+    fill: none;
+    stroke: var(--ok);
+    stroke-width: 1.6;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 400;
+    stroke-dashoffset: calc((1 - var(--appear)) * 400);
+    transition: stroke-dashoffset 1600ms var(--ease-in-out) 200ms;
+  }
+}
+
+.visit {
+  display: grid;
+  grid-template-columns: 3.4em 1fr auto;
+  gap: 0.6em;
+  align-items: center;
+  padding: 0.45em 0;
+  border-top: 1px solid var(--line);
+  color: var(--bone-3);
+  opacity: var(--appear);
+  transition: opacity 600ms var(--ease-out);
+  transition-delay: calc(500ms + var(--i) * 120ms);
+
+  b {
+    color: var(--bone);
+    font-weight: 500;
+  }
+
+  em {
+    font-style: normal;
+    font-size: 0.9em;
+
+    &[data-s='Fait'] {
+      color: var(--ok);
+    }
+    &[data-s='En cours'] {
+      color: var(--ochre);
+    }
+  }
+}
+
+/* Page projet : maquette plus grande, format panoramique sur grand écran */
+.ui.live {
+  font-size: clamp(10px, 2.3cqi, 17px);
+
+  .win,
+  .ticket {
+    max-width: 620px;
+  }
+}
+
+@container (min-width: 760px) {
+  .ui.live {
+    aspect-ratio: 16 / 9;
+  }
+}

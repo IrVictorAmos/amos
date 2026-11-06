@@ -1,14 +1,18 @@
-import { Directive, ElementRef, OnDestroy, OnInit, inject } from '@angular/core';
+import { Directive, ElementRef, OnDestroy, OnInit, inject, input } from '@angular/core';
 
-/** Fait apparaître l'élément en douceur lorsqu'il entre dans l'écran. */
+/** Ajoute .is-visible quand l'élément entre dans l'écran (classe .reveal dans styles.scss). */
 @Directive({ selector: '[appReveal]' })
 export class RevealDirective implements OnInit, OnDestroy {
-  private readonly el = inject(ElementRef<HTMLElement>);
+  /** Retard en millisecondes, pour orchestrer plusieurs éléments. */
+  readonly revealDelay = input(0);
+
+  private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
   private observer?: IntersectionObserver;
 
   ngOnInit(): void {
     const node = this.el.nativeElement;
     node.classList.add('reveal');
+    node.style.transitionDelay = `${this.revealDelay()}ms`;
 
     if (typeof IntersectionObserver === 'undefined') {
       node.classList.add('is-visible');
@@ -16,15 +20,13 @@ export class RevealDirective implements OnInit, OnDestroy {
     }
 
     this.observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            node.classList.add('is-visible');
-            this.observer?.disconnect();
-          }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          node.classList.add('is-visible');
+          this.observer?.disconnect();
         }
       },
-      { threshold: 0.15 },
+      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
     );
     this.observer.observe(node);
   }

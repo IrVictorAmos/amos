@@ -1,0 +1,61 @@
+<section class="section expertise" id="expertise" aria-labelledby="expertise-title">
+  <div class="wrap">
+    <header class="expertise__head">
+      <h2 class="h-section" id="expertise-title">Un logiciel, couche par couche</h2>
+      <p class="lead">
+        Je maîtrise toute la hauteur d'un produit, de l'écran jusqu'à la base de données. Faites défiler : le
+        système se démonte sous vos yeux.
+      </p>
+    </header>
+
+    <div class="expertise__body">
+      <div class="stage">
+        <div
+          class="stack"
+          appScrollProgress
+          [start]="1"
+          [end]="0.2"
+          [class.ai-on]="active() === 4"
+          role="img"
+          aria-label="Vue éclatée des couches : expérience, métier, services et API, données et infrastructure, traversées par l'IA"
+        >
+          @for (layer of layers; track layer.id; let k = $index) {
+            <div
+              class="plane"
+              [style.--h]="layers.length - 1 - k"
+              [class.is-active]="active() === k"
+              [class.is-dim]="active() !== k && active() !== 4"
+            >
+            </div>
+            <span
+              class="tag"
+              [style.--h]="layers.length - 1 - k"
+              [class.is-active]="active() === k"
+              aria-hidden="true"
+              >{{ layer.name }}</span
+            >
+          }
+          <div class="beam" aria-hidden="true"><span></span></div>
+          <span class="beam__label" aria-hidden="true">IA</span>
+        </div>
+      </div>
+
+      <ol class="blocks">
+        @for (layer of layers; track layer.id; let k = $index) {
+          <li class="block" #block [attr.data-index]="k" [class.is-active]="active() === k">
+            <p class="block__name">{{ layer.name }}</p>
+            <h3>{{ layer.title }}</h3>
+            <p class="block__text">{{ layer.text }}</p>
+            <p class="block__tools">{{ layer.tools.join(', ') }}</p>
+          </li>
+        }
+        <li class="block block--ai" #block [attr.data-index]="4" [class.is-active]="active() === 4">
+          <p class="block__name">{{ ai.name }}</p>
+          <h3>{{ ai.title }}</h3>
+          <p class="block__text">{{ ai.text }}</p>
+          <p class="block__tools">{{ ai.tools.join(', ') }}</p>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
