@@ -1,0 +1,40 @@
+# Victor Amos
+
+> Ir. Victor Amos est ingénieur développeur web et mobile à Bukavu (Sud-Kivu, République démocratique du Congo), en master d'architecture logicielle. Il conçoit des systèmes complets, du modèle de données à l'interface, et intègre l'IA (agents de code, prompt engineering, intégration de LLM) à chaque étape de son travail. Il travaille sur place à Bukavu et à distance partout.
+
+Ce fichier résume le site https://amos12.vercel.app pour les assistants IA. Toutes les pages sont disponibles en HTML statique.
+
+## Contact
+
+- E-mail : irvictoramos@gmail.com
+- LinkedIn : https://www.linkedin.com/in/ir-victor-amos-149954387
+- GitHub : https://github.com/IrVictorAmos
+- Facebook : https://web.facebook.com/profile.php?id=61574333849458
+- Formulaire de contact : https://amos12.vercel.app/#contact
+
+## Services
+
+- Applications web et mobiles : conception et développement de A à Z (plateformes métier, e-commerce, applications Flutter), jusqu'à la mise en production.
+- Architecture logicielle : conception ou refonte, découpage en modules, choix techniques argumentés, revue de dette technique.
+- Schéma directeur informatique : état des lieux du système d'information, besoins des métiers, architecture cible, projets priorisés avec budget et calendrier sur 3 à 5 ans.
+- Audit informatique : applications, infrastructure, sécurité et organisation ; rapport avec risques classés et recommandations priorisées.
+- IA et prompt engineering : assistants intégrés aux outils, automatisation, prompts testés et documentés, formation des équipes.
+- Accompagnement des étudiants en informatique : travaux de fin de cycle (TFC), mémoires et projets de fin d'études, du choix du sujet à la soutenance (cahier des charges, UML, Merise, architecture, développement). Le travail reste celui de l'étudiant.
+
+## Compétences techniques
+
+Angular, TypeScript, Flutter, Symfony, PHP 8, API Platform, REST, JWT, PostgreSQL, MySQL, Docker, FrankenPHP, architecture hexagonale, Domain-Driven Design, intégration continue, Claude Code, prompt engineering.
+
+## Réalisations
+
+- [SchoolReflexe](https://amos12.vercel.app/projets/schoolreflexe) : logiciel de gestion scolaire pour les écoles secondaires de la RDC (inscriptions, cotes, bulletins et délibération, finances et mobile money, présences, communication avec les parents, fonctionnement hors ligne). En cours ; démonstration sur réservation.
+- [BeelShop](https://amos12.vercel.app/projets/beelshop) : boutique en ligne d'une bijouterie de Bukavu, commande confirmée sur WhatsApp, paiement à la livraison ou par Mobile Money. En ligne : https://beelshops.gt.tc/?i=1
+- [Events](https://amos12.vercel.app/projets/events) : plateforme de gestion d'événements. En développement.
+- [Gestion hospitalière](https://amos12.vercel.app/projets/gestion-hospitaliere) : système d'information hospitalier (dossiers patients, rendez-vous, consultations, facturation).
+
+## Méthode
+
+1. Comprendre le terrain : ateliers avec les utilisateurs, cahier des charges à exigences référencées.
+2. Dessiner l'architecture : modèle du domaine, couches, décisions techniques écrites.
+3. Construire avec l'IA : agents de code encadrés par des règles de projet, revue et tests humains.
+4. Livrer et mesurer : conteneurs Docker, intégration continue, audits de performance.

@@ -1,0 +1,101 @@
+<section class="section arch" id="architecture" aria-labelledby="arch-title">
+  <div class="wrap">
+    <header class="arch__head">
+      <h2 class="h-section" id="arch-title">Suivez une requête à travers mes systèmes</h2>
+      <p class="lead">
+        Un préfet valide un bulletin sur son téléphone. Faites défiler : la requête traverse chaque couche, et la
+        trace s'écrit sous vos yeux.
+      </p>
+    </header>
+
+    <div class="arch__body">
+      <div class="scene" [class.ai-on]="isAi()">
+        @for (l of layouts; track l.key) {
+          <svg
+            class="graph graph--{{ l.key }}"
+            [attr.viewBox]="'0 0 ' + l.w + ' ' + l.h"
+            role="img"
+            aria-label="Schéma : utilisateur, interface, API, métier, données, et l'IA reliée à chaque couche"
+          >
+            <!-- liens de l'IA vers chaque couche -->
+            @for (d of l.aiLinks; track $index) {
+              <path class="ai-link" [attr.d]="d" />
+            }
+
+            <!-- chemin principal, puis portion parcourue -->
+            <path class="rail" [attr.d]="l.mainD" />
+            <path
+              class="rail rail--done"
+              [attr.d]="l.mainD"
+              [style.stroke-dasharray]="l.mainLen"
+              [style.stroke-dashoffset]="traveled(l)"
+            />
+
+            @for (n of l.nodes; track n.id) {
+              <g class="node" [attr.data-state]="nodeState(n.id)" [class.node--ai]="n.id === 'ai'" [style.transform]="'translate(' + n.x + 'px,' + n.y + 'px)'">
+                <circle class="node__ring" [attr.r]="n.id === 'ai' ? 18 : 15" />
+                <circle class="node__box" [attr.r]="n.id === 'ai' ? 18 : 15" />
+                @if (n.id === 'ai') {
+                  <text class="node__label" text-anchor="middle" dy="0.35em">IA</text>
+                } @else if (l.key === 'v') {
+                  <text class="node__label node__label--side" x="28" dy="0.35em">{{ n.label }}</text>
+                } @else {
+                  <text class="node__label" text-anchor="middle" y="32">{{ n.label }}</text>
+                }
+              </g>
+            }
+
+            <!-- le paquet qui voyage -->
+            <g class="packet" [style.transform]="packet(l)">
+              <circle class="packet__halo" r="10" />
+              <circle class="packet__core" r="4.5" />
+            </g>
+          </svg>
+        }
+
+        <div class="trace" aria-label="Cascade de trace de la requête">
+          <div class="trace__head">
+            <span>Trace : valider un bulletin</span>
+            <span class="trace__total">{{ total }} ms</span>
+          </div>
+          <ol class="spans">
+            @for (s of steps; track s.span; let i = $index) {
+              <li
+                class="span"
+                [class.is-on]="i <= active()"
+                [class.is-active]="i === active()"
+                [class.span--ai]="s.node === 'ai'"
+              >
+                <span class="span__name">{{ s.span }}</span>
+                <span class="span__track">
+                  <span
+                    class="span__bar"
+                    [style.left.%]="(s.start / total) * 100"
+                    [style.width.%]="(s.ms / total) * 100"
+                  ></span>
+                </span>
+                <span class="span__ms">{{ s.ms }} ms</span>
+              </li>
+            }
+          </ol>
+          <p class="trace__note">Exemple de requête tracée dans SchoolReflexe. Durées indicatives.</p>
+        </div>
+      </div>
+
+      <ol class="steps">
+        @for (s of steps; track s.span; let i = $index) {
+          <li class="step" #block [attr.data-index]="i" [class.is-active]="i === active()" [class.step--ai]="s.node === 'ai'">
+            <p class="step__layer">{{ s.layer }}</p>
+            <h3>{{ s.title }}</h3>
+            <p class="step__text">{{ s.text }}</p>
+            <ul class="step__tools">
+              @for (t of s.tools; track t) {
+                <li>{{ t }}</li>
+              }
+            </ul>
+          </li>
+        }
+      </ol>
+    </div>
+  </div>
+</section>

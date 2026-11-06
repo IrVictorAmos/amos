@@ -57,11 +57,18 @@
 
   .line > span {
     display: inline-block;
-    animation: name-in 1200ms var(--ease-out) 120ms both;
+    background: linear-gradient(100deg, var(--bone) 0 44%, var(--ochre-strong) 50%, var(--bone) 56% 100%) 100% 0 /
+      300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation:
+      name-in 1200ms var(--ease-out) 120ms both,
+      sheen 9s var(--ease-in-out) 2.4s infinite;
   }
 
   .line--2 > span {
-    animation-delay: 240ms;
+    animation-delay: 240ms, 2.65s;
   }
 
   .line--2 {
@@ -89,36 +96,154 @@
   }
 }
 
-/* Photo : rideau qui se lève + repères de coupe comme sur un tirage */
+/* =========================================================
+   Portrait : lamelles qui s'ouvrent, photo qui se « développe »
+   du noir et blanc à la couleur, balayage de lumière, étiquettes
+   flottantes. Inclinaison 3D au pointeur (ordinateur) ou au
+   défilement (téléphone).
+   ========================================================= */
 .hero__photo {
+  --rx: 0deg;
+  --ry: 0deg;
+  --gx: 50%;
+  --gy: 0%;
   position: relative;
   margin: var(--s-4) var(--s-3) 0;
+  perspective: 1200px;
+}
+
+.portrait {
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--rx) + (var(--p, 0.25) - 0.25) * 16deg)) rotateY(var(--ry));
+  transition: transform 500ms var(--ease-out);
+  will-change: transform;
 }
 
 .hero__frame {
   position: relative;
   aspect-ratio: 3 / 4;
-  border-radius: var(--r-1);
+  border-radius: var(--r-2);
   overflow: hidden;
   background: var(--ink-2);
-  clip-path: inset(0 0 0 0);
-  animation: curtain 1400ms var(--ease-in-out) 260ms both;
+  box-shadow: 0 50px 80px -40px oklch(0.05 0.03 258 / 0.95);
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: 50% 30%;
-    animation: settle 1900ms var(--ease-out) 260ms both;
+    scale: 1.08;
+    translate: 0 calc((var(--p, 0.25) - 0.25) * -7%);
+    animation:
+      settle 2200ms var(--ease-out) 200ms both,
+      develop 2000ms var(--ease-in-out) 900ms both;
   }
 
-  /* fondu ocre en bas pour lier la photo à la page */
   &::after {
     content: '';
     position: absolute;
     inset: auto 0 0;
-    height: 30%;
+    height: 28%;
     background: linear-gradient(to top, color-mix(in oklch, var(--ink-0) 55%, transparent), transparent);
+    pointer-events: none;
+  }
+}
+
+/* Lamelles verticales qui se retirent en quinconce */
+.strips {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  pointer-events: none;
+
+  i {
+    background: var(--ink-0);
+    transform-origin: 50% 0;
+    animation: strip 1000ms var(--ease-in-out) both;
+    animation-delay: calc(180ms + var(--i) * 75ms);
+    margin-inline: -0.5px;
+
+    &:nth-child(even) {
+      transform-origin: 50% 100%;
+    }
+  }
+}
+
+/* Ligne de lecture ocre qui balaie le portrait une fois */
+.scan {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--ochre);
+  box-shadow: 0 0 18px 4px color-mix(in oklch, var(--ochre) 55%, transparent);
+  opacity: 0;
+  animation: scan 1500ms var(--ease-in-out) 1050ms both;
+  pointer-events: none;
+}
+
+/* Reflet : suit le pointeur, et un balayage lumineux revient régulièrement */
+.glare {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--gx) var(--gy), oklch(1 0 0 / 0.16), transparent 45%);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -20% -60%;
+    background: linear-gradient(105deg, transparent 42%, oklch(1 0 0 / 0.22) 50%, transparent 58%);
+    transform: translateX(-60%);
+    animation: sweep 7s var(--ease-in-out) 3s infinite;
+  }
+}
+
+/* Étiquettes de compétences, en suspension autour du portrait */
+.tag {
+  position: absolute;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: color-mix(in oklch, var(--ink-0) 72%, transparent);
+  backdrop-filter: blur(10px);
+  font-size: var(--step--1);
+  font-weight: 600;
+  white-space: nowrap;
+  transform: translateZ(40px);
+  animation:
+    tag-in 700ms var(--ease-out) both,
+    float 6s var(--ease-in-out) infinite;
+  animation-delay:
+    calc(1700ms + var(--i) * 160ms),
+    calc(2500ms + var(--i) * 900ms);
+
+  &::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ochre);
+    box-shadow: 0 0 10px var(--ochre);
+  }
+
+  &--a {
+    top: 7%;
+    left: 10px;
+  }
+  &--b {
+    top: 46%;
+    right: 10px;
+  }
+  &--c {
+    bottom: 9%;
+    left: 10px;
   }
 }
 
@@ -146,13 +271,13 @@
     border-right-width: 1.5px;
   }
   &--bl {
-    bottom: calc(var(--gap) + 40px);
+    bottom: var(--gap);
     left: var(--gap);
     border-bottom-width: 1.5px;
     border-left-width: 1.5px;
   }
   &--br {
-    bottom: calc(var(--gap) + 40px);
+    bottom: var(--gap);
     right: var(--gap);
     border-bottom-width: 1.5px;
     border-right-width: 1.5px;
@@ -161,6 +286,7 @@
 
 .hero__dim {
   height: 40px;
+  margin-top: var(--s-2);
   animation: fade-up var(--d-slow) var(--ease-out) 1400ms both;
 
   &::before,
@@ -290,6 +416,18 @@
   }
 }
 
+@media (min-width: 1024px) {
+  .tag--a {
+    left: -14%;
+  }
+  .tag--b {
+    right: -12%;
+  }
+  .tag--c {
+    left: -10%;
+  }
+}
+
 @media (min-width: 1440px) {
   .hero__name .line--2 {
     padding-left: 0.62em;
@@ -303,15 +441,73 @@
   }
 }
 
-@keyframes curtain {
+@keyframes settle {
   from {
-    clip-path: inset(100% 0 0 0);
+    scale: 1.3;
   }
 }
 
-@keyframes settle {
+@keyframes develop {
   from {
-    transform: scale(1.22);
+    filter: grayscale(1) contrast(1.25) brightness(0.8);
+  }
+}
+
+@keyframes strip {
+  to {
+    transform: scaleY(0);
+  }
+}
+
+@keyframes scan {
+  0% {
+    opacity: 0;
+    top: 0%;
+  }
+  10%,
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    top: 100%;
+  }
+}
+
+@keyframes sweep {
+  0% {
+    transform: translateX(-60%);
+  }
+  35%,
+  100% {
+    transform: translateX(60%);
+  }
+}
+
+@keyframes sheen {
+  0% {
+    background-position: 100% 0;
+  }
+  22%,
+  100% {
+    background-position: 0 0;
+  }
+}
+
+@keyframes tag-in {
+  from {
+    opacity: 0;
+    scale: 0.7;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -8px;
   }
 }
 

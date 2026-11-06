@@ -26,7 +26,7 @@ import { ContactForm } from '../components/contact-form';
             @for (s of socials; track s.label) {
               <div>
                 <dt>{{ s.label }}</dt>
-                <dd><a class="link" [href]="s.url" target="_blank" rel="noopener">{{ s.url.replace('https://', '') }}</a></dd>
+                <dd><a class="link" [href]="s.url" target="_blank" rel="noopener">{{ s.handle }}</a></dd>
               </div>
             }
           </dl>

@@ -1,4 +1,7 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MailService } from '../core/mail.service';
 
@@ -21,7 +24,15 @@ export class ContactForm {
   protected readonly submitted = signal(false);
   protected readonly isDemo = computed(() => this.mode() === 'demo');
 
-  protected readonly subjects = ['Un projet à réaliser', 'Une offre de poste', 'Une collaboration', 'Autre chose'];
+  protected readonly subjects = [
+    'Un projet à réaliser',
+    'Un schéma directeur ou un audit',
+    'Un accompagnement de fin de cycle',
+    'Une offre de poste',
+    'Autre chose',
+  ];
+  protected readonly errorText = signal('');
+  private readonly query = toSignal(inject(ActivatedRoute).queryParamMap);
   protected readonly positions = ['Préfet ou directeur', 'Promoteur', 'Économe', 'Enseignant', 'Autre'];
   protected readonly slots = ['En semaine, le matin', 'En semaine, l’après-midi', 'Le samedi', 'Peu importe'];
 
@@ -37,6 +48,14 @@ export class ContactForm {
     message: ['', [Validators.maxLength(4000)]],
     website: [''],
   });
+
+  constructor() {
+    effect(() => {
+      const sujet = this.query()?.get('sujet');
+      if (sujet === 'etudiant') this.form.controls.subject.setValue(this.subjects[2]);
+      if (sujet === 'audit') this.form.controls.subject.setValue(this.subjects[1]);
+    });
+  }
 
   protected invalid(name: keyof typeof this.form.controls): boolean {
     const c = this.form.controls[name];
@@ -92,7 +111,9 @@ export class ContactForm {
       this.state.set('sent');
       this.form.reset();
       this.submitted.set(false);
-    } catch {
+    } catch (err) {
+      const msg = err instanceof HttpErrorResponse ? err.error?.error : '';
+      this.errorText.set(typeof msg === 'string' ? msg : '');
       this.state.set('error');
     }
   }

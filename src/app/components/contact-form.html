@@ -116,7 +116,7 @@
       </button>
       @if (state() === 'error') {
         <p class="err err--box" role="alert">
-          L'envoi n'a pas abouti. Réessayez dans un instant, ou écrivez directement à
+          L'envoi n'a pas abouti{{ errorText() ? ' : ' + errorText() : '.' }} Réessayez dans un instant, ou écrivez directement à
           <a href="mailto:irvictoramos@gmail.com">irvictoramos&#64;gmail.com</a>.
         </p>
       }

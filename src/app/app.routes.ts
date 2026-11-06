@@ -5,7 +5,6 @@ export const routes: Routes = [
   {
     path: '',
     component: Home,
-    title: 'Victor Amos — Ingénieur logiciel, architecture web et mobile',
   },
   {
     path: 'projets/:slug',

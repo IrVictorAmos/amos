@@ -84,9 +84,60 @@ export function buildMail(body) {
   return { subject, text, html, replyTo: { name: d.name, address: d.email } };
 }
 
+function smtpConfig() {
+  const host = (process.env.SMTP_HOST || '').trim();
+  const user = (process.env.SMTP_USER || '').trim();
+  // les mots de passe d'application Google s'affichent avec des espaces : on les retire
+  const pass = (process.env.SMTP_PASS || '').replace(/\s+/g, '');
+  const port = Number((process.env.SMTP_PORT || '465').trim());
+  return { host, user, pass, port, ok: Boolean(host && user && pass) };
+}
+
+function transport(c) {
+  return nodemailer.createTransport({
+    host: c.host,
+    port: c.port,
+    secure: c.port === 465,
+    auth: { user: c.user, pass: c.pass },
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+  });
+}
+
+/** Traduit une erreur SMTP en cause compréhensible (sans jamais exposer de secret). */
+function cause(err) {
+  const code = err?.code || '';
+  const rc = err?.responseCode || 0;
+  if (code === 'EAUTH' || rc === 535 || rc === 534) return 'authentification refusée : vérifiez SMTP_USER et SMTP_PASS (mot de passe d’application Google)';
+  if (code === 'ETIMEDOUT' || code === 'ECONNECTION' || code === 'ESOCKET' || code === 'ECONNREFUSED') return 'connexion impossible : vérifiez SMTP_HOST et SMTP_PORT (465 ou 587)';
+  if (code === 'EENVELOPE') return 'adresse d’expédition ou de destination refusée';
+  return `erreur SMTP ${code || rc || 'inconnue'}`;
+}
+
 export default async function handler(req, res) {
+  // Diagnostic : GET /api/send indique si l'envoi est configuré et si la connexion SMTP fonctionne.
+  if (req.method === 'GET') {
+    const c = smtpConfig();
+    const report = {
+      configuration: {
+        SMTP_HOST: c.host || 'manquant',
+        SMTP_PORT: c.port,
+        SMTP_USER: c.user ? c.user.replace(/^(.{2}).*(@.*)$/, '$1***$2') : 'manquant',
+        SMTP_PASS: c.pass ? `défini (${c.pass.length} caractères)` : 'manquant',
+        MAIL_TO: process.env.MAIL_TO || 'irvictoramos@gmail.com (par défaut)',
+      },
+    };
+    if (!c.ok) return res.status(200).json({ ...report, smtp: 'non configuré' });
+    try {
+      await transport(c).verify();
+      return res.status(200).json({ ...report, smtp: 'connexion et authentification OK' });
+    } catch (err) {
+      return res.status(200).json({ ...report, smtp: cause(err) });
+    }
+  }
+
   if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
+    res.setHeader('Allow', 'GET, POST');
     return res.status(405).json({ ok: false, error: 'Méthode non autorisée.' });
   }
 
@@ -103,24 +154,16 @@ export default async function handler(req, res) {
   const mail = buildMail(body);
   if (mail.error) return res.status(400).json({ ok: false, error: mail.error });
 
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, MAIL_TO, MAIL_FROM } = process.env;
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
-    console.error('SMTP non configuré : définir SMTP_HOST, SMTP_USER et SMTP_PASS sur Vercel.');
-    return res.status(500).json({ ok: false, error: "Le service d'envoi n'est pas encore configuré." });
+  const c = smtpConfig();
+  if (!c.ok) {
+    console.error('SMTP non configuré : définir SMTP_HOST, SMTP_USER et SMTP_PASS sur Vercel, puis redéployer.');
+    return res.status(500).json({ ok: false, error: "le service d'envoi n'est pas encore configuré." });
   }
 
-  const port = Number(SMTP_PORT || 465);
-  const transporter = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port,
-    secure: port === 465,
-    auth: { user: SMTP_USER, pass: SMTP_PASS },
-  });
-
   try {
-    await transporter.sendMail({
-      from: { name: 'Portfolio Victor Amos', address: MAIL_FROM || SMTP_USER },
-      to: MAIL_TO || 'irvictoramos@gmail.com',
+    await transport(c).sendMail({
+      from: { name: 'Portfolio Victor Amos', address: (process.env.MAIL_FROM || c.user).trim() },
+      to: (process.env.MAIL_TO || 'irvictoramos@gmail.com').trim(),
       replyTo: mail.replyTo,
       subject: mail.subject,
       text: mail.text,
@@ -128,7 +171,7 @@ export default async function handler(req, res) {
     });
     return res.status(200).json({ ok: true });
   } catch (err) {
-    console.error('Échec SMTP', err);
-    return res.status(502).json({ ok: false, error: "L'envoi a échoué." });
+    console.error('Échec SMTP :', cause(err), err?.response || '');
+    return res.status(502).json({ ok: false, error: 'le serveur de messagerie a refusé l’envoi.' });
   }
 }

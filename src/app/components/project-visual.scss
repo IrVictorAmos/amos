@@ -388,3 +388,58 @@
     aspect-ratio: 16 / 9;
   }
 }
+
+/* ----- Capture réelle dans un cadre de navigateur ----- */
+.ui--shot {
+  margin: 0;
+  perspective: 1400px;
+}
+
+.shot {
+  width: 100%;
+  border-radius: var(--r-2);
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  background: var(--ink-0);
+  box-shadow: var(--shadow-1), 0 40px 80px -30px oklch(0.05 0.03 258 / 0.9);
+  transform-origin: 50% 100%;
+  transform: rotateX(calc((1 - var(--appear)) * 14deg)) translateY(calc((1 - var(--appear)) * 30px))
+    scale(calc(0.94 + var(--appear) * 0.06));
+  transition: transform 1100ms var(--ease-out);
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.shot__bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.6em 0.8em;
+  background: var(--ink-1);
+  border-bottom: 1px solid var(--line);
+
+  i {
+    width: 0.6em;
+    height: 0.6em;
+    border-radius: 50%;
+    background: var(--ink-3);
+  }
+}
+
+.shot__url {
+  margin-inline: auto;
+  padding: 0.15em 1.2em;
+  border-radius: 999px;
+  background: var(--ink-0);
+  color: var(--bone-3);
+  font-size: 0.9em;
+}
+
+/* la capture occupe toute la largeur disponible, sans format imposé */
+.ui.ui--shot {
+  aspect-ratio: auto;
+  padding: clamp(10px, 5cqi, 44px);
+}

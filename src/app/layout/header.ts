@@ -1,15 +1,16 @@
-import { Component, HostListener, effect, signal } from '@angular/core';
+import { Component, DOCUMENT, HostListener, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PROFILE } from '../data/portfolio.data';
+import { Signature } from './signature';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink],
+  imports: [RouterLink, Signature],
   template: `
     <header class="header" [class.is-scrolled]="scrolled()" [class.is-open]="open()">
       <div class="wrap header__bar">
         <a class="mark" routerLink="/" (click)="close()" aria-label="Victor Amos, accueil">
-          <span class="mark__v">V</span><span class="mark__name">Victor Amos</span>
+          <app-signature />
         </a>
 
         <nav class="nav" aria-label="Navigation principale">
@@ -62,14 +63,17 @@ export class Header {
 
   protected readonly links = [
     { label: 'Réalisations', fragment: 'realisations' },
-    { label: 'Expertise', fragment: 'expertise' },
+    { label: 'Services', fragment: 'services' },
+    { label: 'Architecture', fragment: 'architecture' },
     { label: 'Méthode', fragment: 'methode' },
   ];
   protected readonly allLinks = [...this.links, { label: 'Contact', fragment: 'contact' }];
 
+  private readonly doc = inject(DOCUMENT);
+
   constructor() {
     effect(() => {
-      document.documentElement.style.overflow = this.open() ? 'hidden' : '';
+      this.doc.documentElement.style.overflow = this.open() ? 'hidden' : '';
     });
   }
 

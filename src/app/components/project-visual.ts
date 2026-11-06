@@ -1,4 +1,5 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
+import { PROJECTS } from '../data/portfolio.data';
 
 /**
  * Mini-interfaces dessinées en HTML/CSS, une par projet.
@@ -8,6 +9,25 @@ import { Component, input } from '@angular/core';
 @Component({
   selector: 'app-project-visual',
   template: `
+    @if (project()?.image; as img) {
+      <figure class="ui ui--shot" [class.live]="live()">
+        <div class="shot">
+          <div class="shot__bar" aria-hidden="true">
+            <i></i><i></i><i></i><span class="shot__url">{{ host() }}</span>
+          </div>
+          <img
+            [src]="img.src + '-960.webp'"
+            [srcset]="img.src + '-960.webp 960w, ' + img.src + '-1600.webp 1600w'"
+            sizes="(min-width: 1024px) 60vw, 92vw"
+            [width]="img.width"
+            [height]="img.height"
+            [alt]="img.alt"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+      </figure>
+    } @else {
     <div class="ui" [class.live]="live()" [attr.data-kind]="slug()" aria-hidden="true">
       @switch (slug()) {
         @case ('schoolreflexe') {
@@ -78,12 +98,19 @@ import { Component, input } from '@angular/core';
         }
       }
     </div>
+    }
   `,
   styleUrl: './project-visual.scss',
 })
 export class ProjectVisual {
   readonly slug = input.required<string>();
   readonly live = input(false);
+
+  protected readonly project = computed(() => PROJECTS.find((p) => p.slug === this.slug()));
+  protected readonly host = computed(() => {
+    const url = this.project()?.url;
+    return url ? new URL(url).host : '';
+  });
 
   protected readonly grades = [
     { c: 'Mathématiques', v: 84 },
