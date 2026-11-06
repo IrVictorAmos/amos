@@ -1,0 +1,203 @@
+/*
+ * La section est trois fois plus haute que l'écran ; son contenu reste épinglé.
+ * --p (0 → 1) avance avec le défilement et recule quand on remonte.
+ */
+.manifesto {
+  --p: 0;
+  position: relative;
+  height: 280svh;
+  border-top: 1px solid var(--line);
+}
+
+.pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  align-items: center;
+  padding-top: 64px;
+  overflow: hidden;
+}
+
+.pin__grid {
+  display: grid;
+  gap: var(--s-5);
+  align-content: center;
+}
+
+/* ---------- Plan du bâtiment ---------- */
+.plan {
+  width: 100%;
+  max-height: 32svh;
+  overflow: visible;
+}
+
+.grid {
+  opacity: calc(0.25 + var(--p) * 0.5);
+}
+
+.grid-line {
+  stroke: var(--line);
+  stroke-width: 0.6;
+}
+
+.part {
+  --t: clamp(0, calc((var(--p) - var(--a)) / (var(--b) - var(--a))), 1);
+  fill: none;
+  stroke: var(--bone-2);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--t));
+  vector-effect: non-scaling-stroke;
+
+  &.ground {
+    stroke: var(--bone);
+    stroke-width: 2;
+  }
+
+  &.dash {
+    stroke: var(--bone-3);
+  }
+
+  &.roof {
+    stroke: var(--ochre);
+    stroke-width: 2.2;
+  }
+
+  &.dim {
+    stroke: var(--ochre);
+    stroke-width: 1;
+  }
+
+  &.win {
+    stroke: var(--bone-3);
+    stroke-width: 1.2;
+  }
+}
+
+/* les fenêtres s'allument une à une à la fin */
+.win-light {
+  --t: clamp(0, calc((var(--p) - var(--a)) / 0.035), 1);
+  fill: var(--ochre);
+  opacity: calc(var(--t) * 0.9);
+  filter: drop-shadow(0 0 6px color-mix(in oklch, var(--ochre) 80%, transparent));
+}
+
+.note {
+  --t: clamp(0, calc((var(--p) - var(--a)) / 0.06), 1);
+  opacity: var(--t);
+  transform: translateX(calc((1 - var(--t)) * 10px));
+
+  path {
+    fill: none;
+    stroke: var(--ochre);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
+    vector-effect: non-scaling-stroke;
+  }
+
+  circle {
+    fill: var(--ochre);
+  }
+
+  text {
+    fill: var(--bone);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+  }
+}
+
+/* ---------- Texte : mot à mot, du flou au net ---------- */
+.text {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 1rem + 2.1vw, 3.1rem);
+  font-weight: 560;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  max-width: 30ch;
+  text-wrap: pretty;
+}
+
+.word {
+  --k: clamp(0, calc((var(--p) - 0.03 - var(--i) / var(--n) * 0.7) / 0.07), 1);
+  position: relative;
+  display: inline;
+  opacity: calc(0.12 + var(--k) * 0.88);
+  filter: blur(calc((1 - var(--k)) * 5px));
+
+  /* soulignement ocre qui se trace sous les idées clés */
+  &.key {
+    background: linear-gradient(var(--ochre), var(--ochre)) 0 92% / calc(var(--k) * 100%) 0.09em no-repeat;
+    color: var(--bone);
+  }
+}
+
+/* ---------- Indication de défilement ---------- */
+.hint {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  color: var(--bone-3);
+  font-size: var(--step--1);
+  opacity: calc(1 - var(--p) * 1.2);
+}
+
+.hint__bar {
+  position: relative;
+  width: 72px;
+  height: 2px;
+  background: var(--line-2);
+  overflow: hidden;
+
+  span {
+    position: absolute;
+    inset: 0;
+    background: var(--ochre);
+    transform-origin: left;
+    transform: scaleX(var(--p));
+  }
+}
+
+/* ---------- Bureau : texte à gauche, plan à droite ---------- */
+@media (min-width: 1024px) {
+  .pin__grid {
+    grid-template-columns: 7fr 5fr;
+    gap: var(--s-9);
+    align-items: center;
+  }
+
+  .plan {
+    order: 2;
+    max-height: 70svh;
+  }
+
+  .text {
+    order: 1;
+  }
+
+  .hint {
+    order: 3;
+    grid-column: 1;
+  }
+}
+
+/* Mouvement réduit : pas d'épinglage, tout est affiché */
+@media (prefers-reduced-motion: reduce) {
+  .manifesto {
+    --p: 1 !important;
+    height: auto;
+  }
+
+  .pin {
+    position: static;
+    height: auto;
+    padding-block: var(--section);
+  }
+
+  .hint {
+    display: none;
+  }
+}

@@ -1,0 +1,71 @@
+<section
+  class="manifesto"
+  aria-label="Ma vision"
+  appScrollProgress
+  [start]="0"
+  [end]="1"
+  [style.--n]="words.length"
+>
+  <div class="pin">
+    <div class="wrap pin__grid">
+      <svg class="plan" viewBox="0 0 420 372" role="img" aria-label="Plan d'un bâtiment qui se construit : données en fondation, métier et API en structure, interface en façade, architecture en toiture">
+        <!-- quadrillage du plan -->
+        <defs>
+          <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d="M20 0 H0 V20" fill="none" class="grid-line" />
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="420" height="372" fill="url(#grid)" class="grid" />
+
+        @for (w of windows; track $index) {
+          <rect
+            class="win-light"
+            [attr.x]="w.x"
+            [attr.y]="w.y"
+            [attr.width]="w.w"
+            [attr.height]="w.h"
+            rx="2"
+            [style.--a]="w.light"
+          />
+        }
+
+        @for (part of parts; track $index) {
+          <path class="part {{ part.cls ?? '' }}" [attr.d]="part.d" pathLength="1" [style.--a]="part.a" [style.--b]="part.b" />
+        }
+
+        @for (w of windows; track $index) {
+          <rect
+            class="part win"
+            [attr.x]="w.x"
+            [attr.y]="w.y"
+            [attr.width]="w.w"
+            [attr.height]="w.h"
+            rx="2"
+            pathLength="1"
+            [style.--a]="w.a"
+            [style.--b]="w.a + 0.05"
+          />
+        }
+
+        @for (n of notes; track n.label) {
+          <g class="note" [style.--a]="n.a">
+            <path [attr.d]="'M' + n.x1 + ' ' + n.y + ' H330'" />
+            <circle [attr.cx]="n.x1" [attr.cy]="n.y" r="2.5" />
+            <text x="336" [attr.y]="n.y" dy="0.35em">{{ n.label }}</text>
+          </g>
+        }
+      </svg>
+
+      <p class="text" [attr.aria-label]="text">
+        @for (item of words; track $index) {
+          <span class="word" [class.key]="item.key" [style.--i]="$index" aria-hidden="true">{{ item.w }} </span>
+        }
+      </p>
+
+      <div class="hint" aria-hidden="true">
+        <span class="hint__bar"><span></span></span>
+        <span>Faites défiler pour construire</span>
+      </div>
+    </div>
+  </div>
+</section>

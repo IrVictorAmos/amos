@@ -107,6 +107,12 @@
   --ry: 0deg;
   --gx: 50%;
   --gy: 0%;
+  /* valeurs pilotées par le défilement (hero.ts) ; par défaut : portrait visible */
+  --e: 1;
+  --x: 0;
+  --g: 0;
+  --scan: 0;
+  --scan-o: 0;
   position: relative;
   margin: var(--s-4) var(--s-3) 0;
   perspective: 1200px;
@@ -115,8 +121,9 @@
 .portrait {
   position: relative;
   transform-style: preserve-3d;
-  transform: rotateX(calc(var(--rx) + (var(--p, 0.25) - 0.25) * 16deg)) rotateY(var(--ry));
-  transition: transform 500ms var(--ease-out);
+  transform: rotateX(calc(var(--rx) + var(--x) * 22deg)) rotateY(var(--ry)) scale(calc(1 - var(--x) * 0.08));
+  transform-origin: 50% 100%;
+  transition: transform 160ms linear;
   will-change: transform;
 }
 
@@ -133,11 +140,12 @@
     height: 100%;
     object-fit: cover;
     object-position: 50% 30%;
-    scale: 1.08;
-    translate: 0 calc((var(--p, 0.25) - 0.25) * -7%);
+    scale: calc(1.03 + var(--g) * 0.14);
+    translate: 0 calc(var(--x) * -9%);
+    filter: grayscale(var(--g)) contrast(calc(1 + var(--g) * 0.25)) brightness(calc(1 - var(--g) * 0.22));
     animation:
-      settle 2200ms var(--ease-out) 200ms both,
-      develop 2000ms var(--ease-in-out) 900ms both;
+      settle 2200ms var(--ease-out) 200ms backwards,
+      develop 2000ms var(--ease-in-out) 900ms backwards;
   }
 
   &::after {
@@ -159,9 +167,17 @@
   pointer-events: none;
 
   i {
+    --s: calc(var(--i) * 0.06);
     background: var(--ink-0);
     transform-origin: 50% 0;
-    animation: strip 1000ms var(--ease-in-out) both;
+    /* fermées à l'entrée (par le bas) et à la sortie (par le haut), en quinconce */
+    transform: scaleY(
+      max(
+        clamp(0, calc((1 - var(--e) - var(--s)) * 2.4), 1),
+        clamp(0, calc((var(--x) - var(--s)) * 2.4), 1)
+      )
+    );
+    animation: strip 1000ms var(--ease-in-out) backwards;
     animation-delay: calc(180ms + var(--i) * 75ms);
     margin-inline: -0.5px;
 
@@ -178,8 +194,9 @@
   height: 2px;
   background: var(--ochre);
   box-shadow: 0 0 18px 4px color-mix(in oklch, var(--ochre) 55%, transparent);
-  opacity: 0;
-  animation: scan 1500ms var(--ease-in-out) 1050ms both;
+  top: calc(var(--scan) * 100%);
+  opacity: var(--scan-o);
+  animation: scan 1500ms var(--ease-in-out) 1050ms backwards;
   pointer-events: none;
 }
 
@@ -216,9 +233,11 @@
   font-size: var(--step--1);
   font-weight: 600;
   white-space: nowrap;
-  transform: translateZ(40px);
+  --dir: -1;
+  opacity: calc(1 - var(--g) * 1.6);
+  transform: translateZ(40px) translateX(calc(var(--g) * var(--dir) * 56px));
   animation:
-    tag-in 700ms var(--ease-out) both,
+    tag-in 700ms var(--ease-out) backwards,
     float 6s var(--ease-in-out) infinite;
   animation-delay:
     calc(1700ms + var(--i) * 160ms),
@@ -238,6 +257,7 @@
     left: 10px;
   }
   &--b {
+    --dir: 1;
     top: 46%;
     right: 10px;
   }
@@ -256,27 +276,36 @@
   border-color: var(--ochre);
   border-style: solid;
   border-width: 0;
-  animation: crop-in 700ms var(--ease-out) 1300ms both;
+  translate: calc(var(--g) * var(--cx) * 18px) calc(var(--g) * var(--cy) * 18px);
+  animation: crop-in 700ms var(--ease-out) 1300ms backwards;
 
   &--tl {
+    --cx: -1;
+    --cy: -1;
     top: var(--gap);
     left: var(--gap);
     border-top-width: 1.5px;
     border-left-width: 1.5px;
   }
   &--tr {
+    --cx: 1;
+    --cy: -1;
     top: var(--gap);
     right: var(--gap);
     border-top-width: 1.5px;
     border-right-width: 1.5px;
   }
   &--bl {
+    --cx: -1;
+    --cy: 1;
     bottom: var(--gap);
     left: var(--gap);
     border-bottom-width: 1.5px;
     border-left-width: 1.5px;
   }
   &--br {
+    --cx: 1;
+    --cy: 1;
     bottom: var(--gap);
     right: var(--gap);
     border-bottom-width: 1.5px;
@@ -454,8 +483,8 @@
 }
 
 @keyframes strip {
-  to {
-    transform: scaleY(0);
+  from {
+    transform: scaleY(1);
   }
 }
 

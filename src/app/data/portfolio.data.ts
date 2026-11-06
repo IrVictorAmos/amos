@@ -56,7 +56,7 @@ export const PROFILE = {
   timeZone: 'Africa/Lubumbashi',
   available: 'Disponible pour de nouvelles missions',
   intro:
-    "Ingénieur développeur web et mobile, en master d'architecture logicielle. Je conçois des systèmes complets, du modèle de données à l'interface, avec l'IA intégrée à chaque étape de mon travail.",
+    "Ingénieur développeur web et mobile, en master d'architecture logicielle. Je conçois des systèmes complets, du modèle de données à l'interface, avec l'IA intégrée à mon workflow.",
   facts: [
     { label: 'Métier', value: 'Ingénieur développeur web et mobile' },
     { label: 'Formation', value: 'Master en architecture logicielle, en cours' },

@@ -1,11 +1,10 @@
 import { Component, DestroyRef, ElementRef, NgZone, afterNextRender, inject, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PROFILE } from '../data/portfolio.data';
-import { ScrollProgressDirective } from '../shared/scroll-progress.directive';
 
 @Component({
   selector: 'app-hero',
-  imports: [RouterLink, ScrollProgressDirective],
+  imports: [RouterLink],
   templateUrl: './hero.html',
   styleUrl: './hero.scss',
 })
@@ -30,10 +29,47 @@ export class Hero {
       const id = setInterval(() => this.time.set(this.now()), 15_000);
       destroyRef.onDestroy(() => clearInterval(id));
 
-      // Inclinaison 3D qui suit le pointeur (souris). Sur mobile, c'est le défilement qui anime le portrait.
       const el = this.portrait()?.nativeElement;
-      if (!el || !matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      /*
+       * Animation pilotée par le défilement, dans les deux sens :
+       * --e (entrée) : 0 quand le portrait arrive par le bas, 1 quand il est bien visible ;
+       * --x (sortie) : 0 tant qu'il est visible, 1 quand il a quitté l'écran par le haut.
+       * Les lamelles, la couleur, la ligne de lecture et les étiquettes suivent ces valeurs,
+       * à la vitesse du défilement, et reviennent en arrière quand on remonte.
+       */
+      let sFrame = 0;
+      const clamp = (v: number) => Math.min(1, Math.max(0, v));
+      const onScroll = () => {
+        if (sFrame) return;
+        sFrame = requestAnimationFrame(() => {
+          sFrame = 0;
+          const r = el.getBoundingClientRect();
+          const vh = window.innerHeight;
+          const e = clamp((vh - r.top) / (vh * 0.45));
+          const startExit = Math.min(r.top + window.scrollY, vh * 0.22);
+          const x = clamp((startExit - r.top) / (r.height * 0.9));
+          const scan = e < 1 ? e : x;
+          el.style.setProperty('--e', e.toFixed(4));
+          el.style.setProperty('--x', x.toFixed(4));
+          el.style.setProperty('--g', Math.max(1 - e, x).toFixed(4));
+          el.style.setProperty('--scan', scan.toFixed(4));
+          el.style.setProperty('--scan-o', scan > 0.01 && scan < 0.99 ? '1' : '0');
+        });
+      };
+      zone.runOutsideAngular(() => {
+        window.addEventListener('scroll', onScroll, { passive: true });
+        window.addEventListener('resize', onScroll, { passive: true });
+      });
+      onScroll();
+      destroyRef.onDestroy(() => {
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onScroll);
+      });
+
+      // Inclinaison 3D qui suit le pointeur (souris uniquement).
+      if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
       let frame = 0;
       const move = (e: PointerEvent) => {
