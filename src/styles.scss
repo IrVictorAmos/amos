@@ -76,6 +76,32 @@
   --d-slow: 900ms;
 }
 
+/* Propriétés animables (enseigne lumineuse du pied de page) */
+/* position (0 → 1) et rayon (en fraction de la largeur du nom) de la lumière */
+@property --lx {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0.5;
+}
+
+@property --lr {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0.18;
+}
+
+@property --bulb {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --on {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
 /* =========================================================
    Base
    ========================================================= */

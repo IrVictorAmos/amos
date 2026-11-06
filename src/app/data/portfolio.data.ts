@@ -66,9 +66,9 @@ export const PROFILE = {
   manifesto:
     "Un logiciel se construit comme un bâtiment. On pose les fondations avant la façade, on dessine les plans avant de couler le béton, et on pense à ceux qui l'habiteront dans dix ans. C'est ce que j'apporte à chaque projet : une architecture claire, un code qui se relit, et une interface qui donne envie de revenir.",
   socials: [
-    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/ir-victor-amos-149954387', handle: 'Ir Victor Amos' },
-    { label: 'GitHub', url: 'https://github.com/IrVictorAmos', handle: 'IrVictorAmos' },
-    { label: 'Facebook', url: 'https://web.facebook.com/profile.php?id=61574333849458', handle: 'Page Facebook' },
+    { label: 'LinkedIn', url: 'https://www.linkedin.com/in/ir-victor-amos-149954387', handle: 'Ir Victor Amos', icon: 'linkedin' as const },
+    { label: 'GitHub', url: 'https://github.com/IrVictorAmos', handle: 'IrVictorAmos', icon: 'github' as const },
+    { label: 'Facebook', url: 'https://web.facebook.com/profile.php?id=61574333849458', handle: 'Page Facebook', icon: 'facebook' as const },
   ],
 };
 

@@ -2,10 +2,11 @@ import { Component, DOCUMENT, HostListener, effect, inject, signal } from '@angu
 import { RouterLink } from '@angular/router';
 import { PROFILE } from '../data/portfolio.data';
 import { Signature } from './signature';
+import { SocialIcon } from '../components/social-icon';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, Signature],
+  imports: [RouterLink, Signature, SocialIcon],
   template: `
     <header class="header" [class.is-scrolled]="scrolled()" [class.is-open]="open()">
       <div class="wrap header__bar">
@@ -48,7 +49,16 @@ import { Signature } from './signature';
           }
         </nav>
         <div class="wrap sheet__foot">
-          <a [href]="'mailto:' + profile.email">{{ profile.email }}</a>
+          <ul class="sheet__icons">
+            @for (s of socials; track s.label) {
+              <li>
+                <a [href]="s.url" target="_blank" rel="noopener me" [attr.aria-label]="s.label"><app-social-icon [name]="s.icon" /></a>
+              </li>
+            }
+            <li>
+              <a [href]="'mailto:' + profile.email" aria-label="E-mail"><app-social-icon name="email" /></a>
+            </li>
+          </ul>
           <span>{{ profile.city }}</span>
         </div>
       </div>
@@ -58,6 +68,7 @@ import { Signature } from './signature';
 })
 export class Header {
   protected readonly profile = PROFILE;
+  protected readonly socials = PROFILE.socials.filter((s) => s.url);
   protected readonly scrolled = signal(false);
   protected readonly open = signal(false);
 

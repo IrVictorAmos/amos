@@ -149,6 +149,7 @@
 .sheet__foot {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
   gap: var(--s-3);
   color: var(--bone-2);
@@ -164,5 +165,27 @@
   .burger,
   .sheet {
     display: none;
+  }
+}
+
+.sheet__icons {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: var(--s-2);
+
+  a {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid var(--line-2);
+    color: var(--bone);
+
+    &:hover {
+      background: var(--ochre);
+      color: var(--ochre-ink);
+    }
   }
 }

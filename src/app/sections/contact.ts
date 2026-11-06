@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { PROFILE } from '../data/portfolio.data';
 import { ContactForm } from '../components/contact-form';
+import { SocialIcon } from '../components/social-icon';
 
 @Component({
   selector: 'app-contact',
-  imports: [ContactForm],
+  imports: [ContactForm, SocialIcon],
   template: `
     <section class="section contact" id="contact" aria-labelledby="contact-title">
       <div class="wrap contact__grid">
@@ -14,22 +15,23 @@ import { ContactForm } from '../components/contact-form';
             Application web, mobile, refonte d'architecture ou intégration de l'IA dans vos outils : décrivez
             votre besoin, je vous réponds personnellement.
           </p>
-          <dl class="channels">
-            <div>
-              <dt>E-mail</dt>
-              <dd><a class="link" [href]="'mailto:' + profile.email">{{ profile.email }}</a></dd>
-            </div>
-            <div>
-              <dt>Base</dt>
-              <dd>{{ profile.city }}, disponible à distance</dd>
-            </div>
+          <ul class="channels">
+            <li>
+              <a class="channel" [href]="'mailto:' + profile.email">
+                <span class="channel__icon"><app-social-icon name="email" /></span>
+                <span class="channel__text"><span class="channel__label">E-mail</span>{{ profile.email }}</span>
+              </a>
+            </li>
             @for (s of socials; track s.label) {
-              <div>
-                <dt>{{ s.label }}</dt>
-                <dd><a class="link" [href]="s.url" target="_blank" rel="noopener">{{ s.handle }}</a></dd>
-              </div>
+              <li>
+                <a class="channel" [href]="s.url" target="_blank" rel="noopener me">
+                  <span class="channel__icon"><app-social-icon [name]="s.icon" /></span>
+                  <span class="channel__text"><span class="channel__label">{{ s.label }}</span>{{ s.handle }}</span>
+                </a>
+              </li>
             }
-          </dl>
+          </ul>
+          <p class="base">{{ profile.city }}, disponible sur place et à distance.</p>
         </div>
 
         <div class="contact__form">
@@ -49,25 +51,61 @@ import { ContactForm } from '../components/contact-form';
       margin-bottom: var(--s-5);
     }
     .channels {
+      list-style: none;
+      padding: 0;
       display: grid;
-      gap: var(--s-4);
+      gap: var(--s-2);
       margin-top: var(--s-7);
     }
-    .channels div {
-      display: grid;
-      grid-template-columns: 6rem 1fr;
+    .channel {
+      display: flex;
+      align-items: center;
       gap: var(--s-4);
-      padding-top: var(--s-4);
-      border-top: 1px solid var(--line);
+      min-height: 64px;
+      padding: var(--s-2) var(--s-4) var(--s-2) var(--s-2);
+      border-radius: var(--r-3);
+      border: 1px solid var(--line);
+      background: color-mix(in oklch, var(--ink-1) 60%, transparent);
+      transition: border-color var(--d-fast), background-color var(--d-fast);
     }
-    dt {
+    .channel:hover {
+      border-color: var(--line-2);
+      background: var(--ink-1);
+    }
+    .channel__icon {
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: 48px;
+      height: 48px;
+      border-radius: var(--r-2);
+      background: var(--ink-2);
+      color: var(--bone);
+      transition: background-color var(--d-base), color var(--d-base), transform var(--d-base) var(--ease-out);
+    }
+    .channel:hover .channel__icon {
+      background: var(--ochre);
+      color: var(--ochre-ink);
+      transform: rotate(-6deg) scale(1.05);
+    }
+    .channel__text {
+      display: grid;
+      min-width: 0;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+    .channel__label {
       color: var(--bone-3);
       font-size: var(--step--1);
-      padding-top: 2px;
+      font-weight: 400;
     }
-    dd {
-      min-width: 0;
-      overflow-wrap: anywhere;
+    .base {
+      margin-top: var(--s-5);
+      color: var(--bone-3);
+      font-size: var(--step--1);
+    }
+    @media (min-width: 640px) and (max-width: 1023px) {
+      .channels { grid-template-columns: 1fr 1fr; }
     }
     .contact__form {
       padding: var(--s-6) var(--s-5);
